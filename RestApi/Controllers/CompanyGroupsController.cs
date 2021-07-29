@@ -10,21 +10,21 @@ namespace RestApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompaniesController : Controller
+    public class CompanyGroupsController : ControllerBase
     {
 
 
         private MyDBContext myDbContext;
 
-        public CompaniesController(MyDBContext context)
+        public CompanyGroupsController(MyDBContext context)
         {
             myDbContext = context;
         }
 
         [HttpGet]
-        public IList<Companies> Get()
+        public IList<CompanyGroups> Get()
         {
-            return (this.myDbContext.Companies.ToList());
+            return (this.myDbContext.CompanyGroups.ToList());
         }
     }
 }
