@@ -10,7 +10,7 @@ namespace RestApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompaniesController : Controller
+    public class CompaniesController : ControllerBase
     {
 
 
