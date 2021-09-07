@@ -50,6 +50,7 @@ namespace RestApi.DbContexts
             modelBuilder.Entity<Companies>().Property(company => company.CompanyMail).HasColumnType("nvarchar(50)").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<Companies>().HasOne<CompanyGroups>().WithMany().HasPrincipalKey(cGroup => cGroup.Id).HasForeignKey(company => company.CompanyGroupId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_CompanyGroup_Companies");
 
             // CompanyGroups
 
