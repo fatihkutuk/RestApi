@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestApi.Models;
 using RestApi.Models.Address;
+using RestApi.Models.Company;
+using RestApi.Models.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,14 @@ namespace RestApi.DbContexts
         public DbSet<Companies> Companies { get; set; }
         public DbSet<CompanyGroups> CompanyGroups { get; set; }
         public DbSet<Cties> Cties { get; set; }
+        public DbSet<CompanyImages> CompanyImages { get; set; }
+        public DbSet<CompanyComments> CompanyComments { get; set; }
+        public DbSet<CompanyAppointmentTimes> CompanyAppointmentTimes { get; set; }
+        public DbSet<CompanyWorks> CompanyWorks { get; set; }
+        public DbSet<Users> Users { get; set; }
+        public DbSet<UserAppointments> UserAppointments { get; set; }
+        public DbSet<UserAppointmentsSelectedWorks> UserAppointmentsSelectedWorks { get; set; }
+       
        
 
         public MyDBContext(DbContextOptions<MyDBContext> options) : base(options)
@@ -92,6 +102,102 @@ namespace RestApi.DbContexts
             modelBuilder.Entity<Streets>().Property(street => street.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
             modelBuilder.Entity<Streets>().HasOne<Neighborhood>().WithMany().HasPrincipalKey(neigh => neigh.Id).HasForeignKey(street => street.NeighborhoodId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Streets_Neighborhoods");
 
+            // CompanyImges
+
+            modelBuilder.Entity<CompanyImages>().ToTable("CompanyImages");
+            modelBuilder.Entity<CompanyImages>().HasKey(cImage => cImage.Id).HasName("PK_CompanyImages");
+            modelBuilder.Entity<CompanyImages>().Property(cImage => cImage.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<CompanyImages>().Property(cImage => cImage.CompanyId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<CompanyImages>().Property(cImage => cImage.ImageDescription).HasColumnType("nvarchar(500)").IsRequired();
+            modelBuilder.Entity<CompanyImages>().Property(cImage => cImage.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<CompanyImages>().Property(cImage => cImage.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<CompanyImages>().HasOne<Companies>().WithMany().HasPrincipalKey(company => company.Id).HasForeignKey(cImage => cImage.CompanyId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Company_CompanyImages");
+
+            // CompanyComments
+
+            modelBuilder.Entity<CompanyComments>().ToTable("CompanyComments");
+            modelBuilder.Entity<CompanyComments>().HasKey(cComment => cComment.Id).HasName("PK_CompanyComments");
+            modelBuilder.Entity<CompanyComments>().Property(cComment => cComment.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<CompanyComments>().Property(cComment => cComment.UserId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<CompanyComments>().Property(cComment => cComment.Comment).HasColumnType("nvarchar(500)").IsRequired();
+            modelBuilder.Entity<CompanyComments>().Property(cComment => cComment.isConfirmed).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<CompanyComments>().Property(cComment => cComment.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<CompanyComments>().Property(cComment => cComment.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<CompanyComments>().HasOne<Companies>().WithMany().HasPrincipalKey(company => company.Id).HasForeignKey(cImage => cImage.CompanyId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Company_CompanyComments");
+            modelBuilder.Entity<CompanyComments>().HasOne<Users>().WithMany().HasPrincipalKey(user => user.Id).HasForeignKey(cComment => cComment.UserId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_User_CompanyComments");
+
+            // CompanyAppointmentTimes
+
+            modelBuilder.Entity<CompanyAppointmentTimes>().ToTable("CompanyAppointmentTimes");
+            modelBuilder.Entity<CompanyAppointmentTimes>().HasKey(caTimes => caTimes.Id).HasName("PK_CompanyAppointmentTimes");
+            modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.CompanyId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.TimeToStart).HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.TimeToFinish).HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.isAvaible).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<CompanyAppointmentTimes>().HasOne<Companies>().WithMany().HasPrincipalKey(company => company.Id).HasForeignKey(caTimes => caTimes.CompanyId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Company_CompanyAppointmentTimes");
+
+            // CompanyWorks
+
+            modelBuilder.Entity<CompanyWorks>().ToTable("CompanyWorks");
+            modelBuilder.Entity<CompanyWorks>().HasKey(cWorks => cWorks.Id).HasName("PK_CompanyWorks");
+            modelBuilder.Entity<CompanyWorks>().Property(cWorks => cWorks.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<CompanyWorks>().Property(cWorks => cWorks.CompanyId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<CompanyWorks>().Property(cWorks => cWorks.Description).HasColumnType("nvarchar(500)").IsRequired();
+            modelBuilder.Entity<CompanyWorks>().Property(cWorks => cWorks.ImagePath).HasColumnType("nvarchar(200)").IsRequired();
+            modelBuilder.Entity<CompanyWorks>().Property(cWorks => cWorks.DurationMin).HasColumnType("double").IsRequired();
+            modelBuilder.Entity<CompanyWorks>().Property(cWorks => cWorks.Price).HasColumnType("double").IsRequired();
+            modelBuilder.Entity<CompanyWorks>().Property(cWorks => cWorks.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<CompanyWorks>().Property(cWorks => cWorks.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<CompanyWorks>().HasOne<Companies>().WithMany().HasPrincipalKey(company => company.Id).HasForeignKey(cWorks => cWorks.CompanyId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Company_CompanyWorks");
+
+            // UserAppointmentsSelectedWorks
+
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().ToTable("UserAppointmentsSelectedWorks");
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().HasKey(uasWorks => uasWorks.Id).HasName("PK_UserAppointmentsSelectedWorks");
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().Property(uasWorks => uasWorks.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().Property(uasWorks => uasWorks.UserId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().Property(uasWorks => uasWorks.UserAppointmentId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().Property(uasWorks => uasWorks.CompanyId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().Property(uasWorks => uasWorks.CompanyWorkId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().Property(uasWorks => uasWorks.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().Property(uasWorks => uasWorks.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().HasOne<Users>().WithMany().HasPrincipalKey(user => user.Id).HasForeignKey(uasWorks => uasWorks.UserId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_User_PK_UserAppointmentsSelectedWorks");
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().HasOne<UserAppointments>().WithMany().HasPrincipalKey(userAppoint => userAppoint.Id).HasForeignKey(uasWorks => uasWorks.UserAppointmentId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_UserAppointments_PK_UserAppointmentsSelectedWorks");
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().HasOne<Companies>().WithMany().HasPrincipalKey(company => company.Id).HasForeignKey(uasWorks => uasWorks.CompanyId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Company_PK_UserAppointmentsSelectedWorks");
+            modelBuilder.Entity<UserAppointmentsSelectedWorks>().HasOne<CompanyWorks>().WithMany().HasPrincipalKey(companywork => companywork.Id).HasForeignKey(uasWorks => uasWorks.CompanyWorkId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_CompanyWork_PK_UserAppointmentsSelectedWorks");
+
+            // UserAppointments
+
+            modelBuilder.Entity<UserAppointments>().ToTable("UserAppointments");
+            modelBuilder.Entity<UserAppointments>().HasKey(userAppoint => userAppoint.Id).HasName("PK_UserAppointments");
+            modelBuilder.Entity<UserAppointments>().Property(userAppoint => userAppoint.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<UserAppointments>().Property(userAppoint => userAppoint.UserId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<UserAppointments>().Property(userAppoint => userAppoint.CompanyAppointmentTimeId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<UserAppointments>().Property(userAppoint => userAppoint.isConfirmed).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<UserAppointments>().Property(userAppoint => userAppoint.isFinished).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<UserAppointments>().Property(userAppoint => userAppoint.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<UserAppointments>().Property(userAppoint => userAppoint.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<UserAppointments>().HasOne<Users>().WithMany().HasPrincipalKey(user => user.Id).HasForeignKey(userAppoint => userAppoint.UserId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_User_UserAppointments");
+            modelBuilder.Entity<UserAppointments>().HasOne<CompanyAppointmentTimes>().WithMany().HasPrincipalKey(caTimes => caTimes.Id).HasForeignKey(userAppoint => userAppoint.CompanyAppointmentTimeId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_CompanyAppointmentTimes_UserAppointments");
+
+            // Users
+
+            modelBuilder.Entity<Users>().ToTable("Users");
+            modelBuilder.Entity<Users>().HasKey(user => user.Id).HasName("PK_Users");
+            modelBuilder.Entity<Users>().Property(user => user.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<Users>().Property(user => user.Name).HasColumnType("nvarchar(50)").IsRequired();
+            modelBuilder.Entity<Users>().Property(user => user.Surname).HasColumnType("nvarchar(50)").IsRequired();
+            modelBuilder.Entity<Users>().Property(user => user.UserName).HasColumnType("nvarchar(50)").IsRequired();
+            modelBuilder.Entity<Users>().Property(user => user.Email).HasColumnType("nvarchar(100)").IsRequired();
+            modelBuilder.Entity<Users>().Property(user => user.Phone).HasColumnType("nvarchar(20)").IsRequired();
+            modelBuilder.Entity<Users>().Property(user => user.Password).HasColumnType("nvarchar(200)").IsRequired();
+            modelBuilder.Entity<Users>().Property(user => user.isActive).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<Users>().Property(user => user.isAuthentication).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<Users>().Property(user => user.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<Users>().Property(user => user.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
 
         }
     }
