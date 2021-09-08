@@ -14,9 +14,14 @@ namespace RestApi.DbContexts
     {
         public DbSet<Companies> Companies { get; set; }
         public DbSet<CompanyGroups> CompanyGroups { get; set; }
+        public DbSet<Counties> Counties { get; set; }
         public DbSet<Cties> Cties { get; set; }
+        public DbSet<Streets> Streets { get; set; }
         public DbSet<CompanyImages> CompanyImages { get; set; }
+        public DbSet<Neighborhood> Neighborhoods { get; set; }
         public DbSet<CompanyComments> CompanyComments { get; set; }
+        public DbSet<CompanyTables> CompanyTables { get; set; }
+        public DbSet<UserAppointmentsSelectedTables> UserAppointmentsSelectedTables { get; set; }
         public DbSet<CompanyAppointmentTimes> CompanyAppointmentTimes { get; set; }
         public DbSet<CompanyWorks> CompanyWorks { get; set; }
         public DbSet<Users> Users { get; set; }
@@ -48,6 +53,7 @@ namespace RestApi.DbContexts
             modelBuilder.Entity<Companies>().Property(company => company.CompanyDelegateName).HasColumnType("nvarchar(50)").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CompanyDelegatePhoneNumber).HasColumnType("nvarchar(20)").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CompanyMail).HasColumnType("nvarchar(50)").IsRequired();
+            modelBuilder.Entity<Companies>().Property(company => company.isTable).HasColumnType("bit").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
             modelBuilder.Entity<Companies>().HasOne<CompanyGroups>().WithMany().HasPrincipalKey(cGroup => cGroup.Id).HasForeignKey(company => company.CompanyGroupId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_CompanyGroup_Companies");
@@ -135,7 +141,7 @@ namespace RestApi.DbContexts
             modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.CompanyId).HasColumnType("int").IsRequired();
             modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.TimeToStart).HasColumnType("datetime").IsRequired();
             modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.TimeToFinish).HasColumnType("datetime").IsRequired();
-            modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.isAvaible).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.isAvailable).HasColumnType("bit").IsRequired();
             modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
             modelBuilder.Entity<CompanyAppointmentTimes>().Property(caTimes => caTimes.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
             modelBuilder.Entity<CompanyAppointmentTimes>().HasOne<Companies>().WithMany().HasPrincipalKey(company => company.Id).HasForeignKey(caTimes => caTimes.CompanyId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Company_CompanyAppointmentTimes");
@@ -154,6 +160,18 @@ namespace RestApi.DbContexts
             modelBuilder.Entity<CompanyWorks>().Property(cWorks => cWorks.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
             modelBuilder.Entity<CompanyWorks>().HasOne<Companies>().WithMany().HasPrincipalKey(company => company.Id).HasForeignKey(cWorks => cWorks.CompanyId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Company_CompanyWorks");
 
+            // CompanyTables
+
+            modelBuilder.Entity<CompanyTables>().ToTable("CompanyTables");
+            modelBuilder.Entity<CompanyTables>().HasKey(cTable => cTable.Id).HasName("PK_CompanyTables");
+            modelBuilder.Entity<CompanyTables>().Property(cTable => cTable.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<CompanyTables>().Property(cTable => cTable.CompanyId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<CompanyTables>().Property(cTable => cTable.Name).HasColumnType("nvarchar(50)").IsRequired();
+            modelBuilder.Entity<CompanyTables>().Property(cTable => cTable.isAvailable).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<CompanyTables>().Property(cTable => cTable.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<CompanyTables>().Property(cTable => cTable.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<CompanyTables>().HasOne<Companies>().WithMany().HasPrincipalKey(company => company.Id).HasForeignKey(cTable => cTable.CompanyId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Company_CompanyTables");
+
             // UserAppointmentsSelectedWorks
 
             modelBuilder.Entity<UserAppointmentsSelectedWorks>().ToTable("UserAppointmentsSelectedWorks");
@@ -169,6 +187,18 @@ namespace RestApi.DbContexts
             modelBuilder.Entity<UserAppointmentsSelectedWorks>().HasOne<UserAppointments>().WithMany().HasPrincipalKey(userAppoint => userAppoint.Id).HasForeignKey(uasWorks => uasWorks.UserAppointmentId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_UserAppointments_PK_UserAppointmentsSelectedWorks");
             modelBuilder.Entity<UserAppointmentsSelectedWorks>().HasOne<Companies>().WithMany().HasPrincipalKey(company => company.Id).HasForeignKey(uasWorks => uasWorks.CompanyId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Company_PK_UserAppointmentsSelectedWorks");
             modelBuilder.Entity<UserAppointmentsSelectedWorks>().HasOne<CompanyWorks>().WithMany().HasPrincipalKey(companywork => companywork.Id).HasForeignKey(uasWorks => uasWorks.CompanyWorkId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_CompanyWork_PK_UserAppointmentsSelectedWorks");
+
+            //UserAppointmentsSelectedTables
+
+            modelBuilder.Entity<UserAppointmentsSelectedTables>().ToTable("UserAppointmentsSelectedTables");
+            modelBuilder.Entity<UserAppointmentsSelectedTables>().HasKey(uasTables => uasTables.Id).HasName("PK_UserAppointments");
+            modelBuilder.Entity<UserAppointmentsSelectedTables>().Property(uasTables => uasTables.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<UserAppointmentsSelectedTables>().Property(uasTables => uasTables.UserAppointmentId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<UserAppointmentsSelectedTables>().Property(uasTables => uasTables.TableId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<UserAppointmentsSelectedTables>().Property(uasTables => uasTables.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<UserAppointmentsSelectedTables>().Property(uasTables => uasTables.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<UserAppointmentsSelectedTables>().HasOne<UserAppointments>().WithMany().HasPrincipalKey(usera => usera.Id).HasForeignKey(uasTables => uasTables.UserAppointmentId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_UserAppointments_UserAppointmentsSelectedTables");
+            modelBuilder.Entity<UserAppointmentsSelectedTables>().HasOne<CompanyTables>().WithMany().HasPrincipalKey(cTables => cTables.Id).HasForeignKey(uasTables => uasTables.TableId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_CompanyTables_UserAppointmentsSelectedTables");
 
             // UserAppointments
 

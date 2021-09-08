@@ -11,7 +11,7 @@ namespace RestApi.Models.Company
         public int CompanyId { get; set; }
         public DateTime TimeToStart { get; set; }
         public DateTime TimeToFinish { get; set; }
-        public bool isAvaible { get; set; }
+        public bool isAvailable { get; set; }
         public DateTime CreationDateTime { get; set; }
         public DateTime? LastUpdateDateTime { get; set; }
     }

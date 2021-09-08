@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RestApi.Models
+namespace RestApi.Models.Company
 {
     public class Companies
     {
@@ -19,6 +19,7 @@ namespace RestApi.Models
         public string CompanyDelegateName { get; set; }
         public string CompanyDelegatePhoneNumber { get; set; }
         public string CompanyMail { get; set; }
+        public bool isTable { get; set; }
         public DateTime CreationDateTime { get; set; }
         public DateTime? LastUpdateDateTime { get; set; }
     }

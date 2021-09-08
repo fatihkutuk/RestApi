@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RestApi.Models
+namespace RestApi.Models.Company
 {
     public class CompanyGroups
     {
