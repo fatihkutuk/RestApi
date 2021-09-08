@@ -17,6 +17,7 @@ namespace RestApi.Models.Company
         public string CompanyAddress { get; set; }
         public string CompanyLocation { get; set; }
         public string CompanyDelegateName { get; set; }
+        public string Password { get; set; }
         public string CompanyDelegatePhoneNumber { get; set; }
         public string CompanyMail { get; set; }
         public bool isTable { get; set; }

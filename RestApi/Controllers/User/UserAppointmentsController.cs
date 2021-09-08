@@ -24,5 +24,29 @@ namespace RestApi.Controllers.User
         {
             return (this.myDbContext.UserAppointments.ToList());
         }
+        [HttpPost]
+        public IActionResult Post(UserAppointments userAppointments)
+        {
+            myDbContext.UserAppointments.Add(userAppointments);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
+
+        [HttpPut]
+        public IActionResult Put(UserAppointments userAppointments)
+        {
+            myDbContext.UserAppointments.Update(userAppointments);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
+
+        [HttpDelete]
+
+        public IActionResult Delete(UserAppointments userAppointments)
+        {
+            myDbContext.UserAppointments.Remove(userAppointments);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
     }
 }

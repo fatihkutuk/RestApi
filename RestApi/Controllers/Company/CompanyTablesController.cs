@@ -24,5 +24,29 @@ namespace RestApi.Controllers.Company
         {
             return (this.myDbContext.CompanyTables.ToList());
         }
+        [HttpPost]
+        public IActionResult Post(CompanyTables companyTables)
+        {
+            myDbContext.CompanyTables.Add(companyTables);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
+
+        [HttpPut]
+        public IActionResult Put(CompanyTables companyTables)
+        {
+            myDbContext.CompanyTables.Update(companyTables);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
+
+        [HttpDelete]
+
+        public IActionResult Delete(CompanyTables companyTables)
+        {
+            myDbContext.CompanyTables.Remove(companyTables);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using RestApi.DbContexts;
 using RestApi.Models.Address;
 using System;
@@ -22,7 +23,31 @@ namespace RestApi.Controllers.Adress
         [HttpGet]
         public IList<Cties> Get()
         {
-            return (this.myDbContext.Cties.ToList());
+            return (myDbContext.Cties.ToList());
+        }
+        [HttpPost]
+        public IActionResult Post(Cties cties)
+        {
+            myDbContext.Cties.Add(cties);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
+
+        [HttpPut]
+        public IActionResult Put(Cties cties)
+        {
+            myDbContext.Cties.Update(cties);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
+
+        [HttpDelete]
+
+        public IActionResult Delete(Cties cties)
+        {
+            myDbContext.Cties.Remove(cties);
+            myDbContext.SaveChanges();
+            return Accepted();
         }
     }
 }

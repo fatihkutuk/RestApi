@@ -51,6 +51,7 @@ namespace RestApi.DbContexts
             modelBuilder.Entity<Companies>().Property(company => company.CompanyAddress).HasColumnType("nvarchar(300)").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CompanyLocation).HasColumnType("text").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CompanyDelegateName).HasColumnType("nvarchar(50)").IsRequired();
+            modelBuilder.Entity<Companies>().Property(company => company.Password).HasColumnType("nvarchar(250)").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CompanyDelegatePhoneNumber).HasColumnType("nvarchar(20)").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CompanyMail).HasColumnType("nvarchar(50)").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.isTable).HasColumnType("bit").IsRequired();

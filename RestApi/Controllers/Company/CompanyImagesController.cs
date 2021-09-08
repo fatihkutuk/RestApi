@@ -24,5 +24,29 @@ namespace RestApi.Controllers.Company
         {
             return (this.myDbContext.CompanyImages.ToList());
         }
+        [HttpPost]
+        public IActionResult Post(CompanyImages companyImages)
+        {
+            myDbContext.CompanyImages.Add(companyImages);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
+
+        [HttpPut]
+        public IActionResult Put(CompanyImages companyImages)
+        {
+            myDbContext.CompanyImages.Update(companyImages);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
+
+        [HttpDelete]
+
+        public IActionResult Delete(CompanyImages companyImages)
+        {
+            myDbContext.CompanyImages.Remove(companyImages);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
     }
 }

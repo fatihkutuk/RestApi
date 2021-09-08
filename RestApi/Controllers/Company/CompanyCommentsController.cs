@@ -24,5 +24,29 @@ namespace RestApi.Controllers.Company
         {
             return (this.myDbContext.CompanyComments.ToList());
         }
+        [HttpPost]
+        public IActionResult Post(CompanyComments companyComments)
+        {
+            myDbContext.CompanyComments.Add(companyComments);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
+
+        [HttpPut]
+        public IActionResult Put(CompanyComments companyComments)
+        {
+            myDbContext.CompanyComments.Update(companyComments);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
+
+        [HttpDelete]
+
+        public IActionResult Delete(CompanyComments companyComments)
+        {
+            myDbContext.CompanyComments.Remove(companyComments);
+            myDbContext.SaveChanges();
+            return Accepted();
+        }
     }
 }
