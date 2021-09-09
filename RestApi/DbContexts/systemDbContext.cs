@@ -1,16 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using RestApi.Models;
 using RestApi.Models.Address;
 using RestApi.Models.Company;
 using RestApi.Models.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace RestApi.DbContexts
 {
-    public class MyDBContext : DbContext
+    public class systemDbContext : DbContext
     {
         public DbSet<Companies> Companies { get; set; }
         public DbSet<CompanyGroups> CompanyGroups { get; set; }
@@ -21,16 +20,18 @@ namespace RestApi.DbContexts
         public DbSet<Neighborhood> Neighborhoods { get; set; }
         public DbSet<CompanyComments> CompanyComments { get; set; }
         public DbSet<CompanyTables> CompanyTables { get; set; }
+        public DbSet<CompanyGroupAppointmentAreas> CompanyGroupAppointmentAreas { get; set; }
+        public DbSet<CompanyGroupAppointmentAreaTypes> CompanyGroupAppointmentAreaTypes { get; set; }
         public DbSet<UserAppointmentsSelectedTables> UserAppointmentsSelectedTables { get; set; }
         public DbSet<CompanyAppointmentTimes> CompanyAppointmentTimes { get; set; }
         public DbSet<CompanyWorks> CompanyWorks { get; set; }
         public DbSet<Users> Users { get; set; }
         public DbSet<UserAppointments> UserAppointments { get; set; }
         public DbSet<UserAppointmentsSelectedWorks> UserAppointmentsSelectedWorks { get; set; }
-       
-       
 
-        public MyDBContext(DbContextOptions<MyDBContext> options) : base(options)
+
+
+        public systemDbContext(DbContextOptions<systemDbContext> options) : base(options)
         {
         }
 
@@ -54,7 +55,6 @@ namespace RestApi.DbContexts
             modelBuilder.Entity<Companies>().Property(company => company.Password).HasColumnType("nvarchar(250)").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CompanyDelegatePhoneNumber).HasColumnType("nvarchar(20)").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CompanyMail).HasColumnType("nvarchar(50)").IsRequired();
-            modelBuilder.Entity<Companies>().Property(company => company.isTable).HasColumnType("bit").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
             modelBuilder.Entity<Companies>().Property(company => company.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
             modelBuilder.Entity<Companies>().HasOne<CompanyGroups>().WithMany().HasPrincipalKey(cGroup => cGroup.Id).HasForeignKey(company => company.CompanyGroupId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_CompanyGroup_Companies");
@@ -133,6 +133,30 @@ namespace RestApi.DbContexts
             modelBuilder.Entity<CompanyComments>().Property(cComment => cComment.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
             modelBuilder.Entity<CompanyComments>().HasOne<Companies>().WithMany().HasPrincipalKey(company => company.Id).HasForeignKey(cImage => cImage.CompanyId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_Company_CompanyComments");
             modelBuilder.Entity<CompanyComments>().HasOne<Users>().WithMany().HasPrincipalKey(user => user.Id).HasForeignKey(cComment => cComment.UserId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_User_CompanyComments");
+
+            //CompanyGroupAppointmentAreas
+
+            modelBuilder.Entity<CompanyGroupAppointmentAreas>().ToTable("CompanyGroupAppointmentAreas");
+            modelBuilder.Entity<CompanyGroupAppointmentAreas>().HasKey(cgaArea => cgaArea.Id).HasName("PK_CompanyGroupAppointmentAreas");
+            modelBuilder.Entity<CompanyGroupAppointmentAreas>().Property(cgaArea => cgaArea.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<CompanyGroupAppointmentAreas>().Property(cgaArea => cgaArea.CompanyGroupAppointmentAreaAreaTypeId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<CompanyGroupAppointmentAreas>().Property(cgaArea => cgaArea.Name).HasColumnType("nvarchar(50)").IsRequired();
+            modelBuilder.Entity<CompanyGroupAppointmentAreas>().Property(cgaArea => cgaArea.Description).HasColumnType("nvarchar(200)").IsRequired();
+            modelBuilder.Entity<CompanyGroupAppointmentAreas>().Property(cgaArea => cgaArea.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<CompanyGroupAppointmentAreas>().Property(cgaArea => cgaArea.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<CompanyGroupAppointmentAreas>().HasOne<CompanyGroupAppointmentAreaTypes>().WithMany().HasPrincipalKey(cgaArea => cgaArea.Id).HasForeignKey(cgaArea => cgaArea.CompanyGroupAppointmentAreaAreaTypeId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_CompanyGroupAppointmentAreaTypes_CompanyGroupAppointmentAreas");
+
+            //CompanyGroupAppointmentAreaTypes
+
+            modelBuilder.Entity<CompanyGroupAppointmentAreaTypes>().ToTable("CompanyGroupAppointmentAreaTypes");
+            modelBuilder.Entity<CompanyGroupAppointmentAreaTypes>().HasKey(cgaAreaType => cgaAreaType.Id).HasName("PK_CompanyGroupAppointmentAreaTypes");
+            modelBuilder.Entity<CompanyGroupAppointmentAreaTypes>().Property(cgaAreaType => cgaAreaType.Id).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
+            modelBuilder.Entity<CompanyGroupAppointmentAreaTypes>().Property(cgaAreaType => cgaAreaType.CompanyGroupId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<CompanyGroupAppointmentAreaTypes>().Property(cgaAreaType => cgaAreaType.Name).HasColumnType("nvarchar(50)").IsRequired();
+            modelBuilder.Entity<CompanyGroupAppointmentAreaTypes>().Property(cgaAreaType => cgaAreaType.Description).HasColumnType("nvarchar(200)").IsRequired();
+            modelBuilder.Entity<CompanyGroupAppointmentAreaTypes>().Property(cgaAreaType => cgaAreaType.CreationDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired();
+            modelBuilder.Entity<CompanyGroupAppointmentAreaTypes>().Property(cgaAreaType => cgaAreaType.LastUpdateDateTime).HasDefaultValueSql("CURRENT_TIMESTAMP()").HasColumnType("datetime").IsRequired(false);
+            modelBuilder.Entity<CompanyGroupAppointmentAreaTypes>().HasOne<CompanyGroups>().WithMany().HasPrincipalKey(companyGroup => companyGroup.Id).HasForeignKey(cgaArea => cgaArea.CompanyGroupId).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_CompanyGroup_CompanyGroupAppointmentAreaTypes");
 
             // CompanyAppointmentTimes
 

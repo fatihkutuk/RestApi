@@ -12,31 +12,38 @@ namespace RestApi.Controllers.Company
     [ApiController]
     public class CompanyCommentsController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public CompanyCommentsController(MyDBContext context)
+        public CompanyCommentsController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<CompanyComments> Get()
         {
-            return (this.myDbContext.CompanyComments.ToList());
+            return (this.systemDbContext.CompanyComments.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public CompanyComments Get([FromRoute] int Id)
+        {
+            return (systemDbContext.CompanyComments.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(CompanyComments companyComments)
         {
-            myDbContext.CompanyComments.Add(companyComments);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyComments.Add(companyComments);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(CompanyComments companyComments)
         {
-            myDbContext.CompanyComments.Update(companyComments);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyComments.Update(companyComments);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -44,8 +51,8 @@ namespace RestApi.Controllers.Company
 
         public IActionResult Delete(CompanyComments companyComments)
         {
-            myDbContext.CompanyComments.Remove(companyComments);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyComments.Remove(companyComments);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

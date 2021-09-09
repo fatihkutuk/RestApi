@@ -12,32 +12,38 @@ namespace RestApi.Controllers.Company
     [ApiController]
     public class CompanyAppointmentTimesController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public CompanyAppointmentTimesController(MyDBContext context)
+        public CompanyAppointmentTimesController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<CompanyAppointmentTimes> Get()
         {
-            return (this.myDbContext.CompanyAppointmentTimes.ToList());
+            return (this.systemDbContext.CompanyAppointmentTimes.ToList());
+        }
+
+        [HttpGet("{Id}")]
+        public CompanyAppointmentTimes Get([FromRoute] int Id)
+        {
+            return (systemDbContext.CompanyAppointmentTimes.Where(c => c.Id == Id).FirstOrDefault());
         }
 
         [HttpPost]
         public IActionResult Post(CompanyAppointmentTimes companyAppointmentTimes)
         {
-            myDbContext.CompanyAppointmentTimes.Add(companyAppointmentTimes);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyAppointmentTimes.Add(companyAppointmentTimes);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(CompanyAppointmentTimes companyAppointmentTimes)
         {
-            myDbContext.CompanyAppointmentTimes.Update(companyAppointmentTimes);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyAppointmentTimes.Update(companyAppointmentTimes);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -45,8 +51,8 @@ namespace RestApi.Controllers.Company
 
         public IActionResult Delete(CompanyAppointmentTimes companyAppointmentTimes)
         {
-            myDbContext.CompanyAppointmentTimes.Remove(companyAppointmentTimes);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyAppointmentTimes.Remove(companyAppointmentTimes);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

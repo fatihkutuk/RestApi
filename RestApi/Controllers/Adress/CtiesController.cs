@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using RestApi.DbContexts;
 using RestApi.Models.Address;
@@ -13,31 +14,38 @@ namespace RestApi.Controllers.Adress
     [ApiController]
     public class CtiesController : Controller
     {
-        private MyDBContext myDbContext;
+        private readonly systemDbContext systemDbContext;
 
-        public CtiesController(MyDBContext context)
+        public CtiesController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
+        }
+
+        [HttpGet("{Id}")]
+        public Cties Get([FromRoute] int Id)
+        {
+            return (systemDbContext.Cties.Where(c => c.Id == Id).FirstOrDefault());   
         }
 
         [HttpGet]
         public IList<Cties> Get()
         {
-            return (myDbContext.Cties.ToList());
+            return (systemDbContext.Cties.ToList());
         }
+
         [HttpPost]
         public IActionResult Post(Cties cties)
         {
-            myDbContext.Cties.Add(cties);
-            myDbContext.SaveChanges();
+            systemDbContext.Cties.Add(cties);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(Cties cties)
         {
-            myDbContext.Cties.Update(cties);
-            myDbContext.SaveChanges();
+            systemDbContext.Cties.Update(cties);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -45,8 +53,8 @@ namespace RestApi.Controllers.Adress
 
         public IActionResult Delete(Cties cties)
         {
-            myDbContext.Cties.Remove(cties);
-            myDbContext.SaveChanges();
+            systemDbContext.Cties.Remove(cties);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

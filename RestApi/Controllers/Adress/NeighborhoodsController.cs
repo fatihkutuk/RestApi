@@ -13,31 +13,38 @@ namespace RestApi.Controllers.Adress
     [ApiController]
     public class NeighborhoodsController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public NeighborhoodsController(MyDBContext context)
+        public NeighborhoodsController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<Neighborhood> Get()
         {
-            return (this.myDbContext.Neighborhoods.ToList());
+            return (this.systemDbContext.Neighborhoods.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public Neighborhood Get([FromRoute] int Id)
+        {
+            return (systemDbContext.Neighborhoods.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(Neighborhood neighborhood)
         {
-            myDbContext.Neighborhoods.Add(neighborhood);
-            myDbContext.SaveChanges();
+            systemDbContext.Neighborhoods.Add(neighborhood);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(Neighborhood neighborhood)
         {
-            myDbContext.Neighborhoods.Update(neighborhood);
-            myDbContext.SaveChanges();
+            systemDbContext.Neighborhoods.Update(neighborhood);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -45,8 +52,8 @@ namespace RestApi.Controllers.Adress
 
         public IActionResult Delete(Neighborhood neighborhood)
         {
-            myDbContext.Neighborhoods.Remove(neighborhood);
-            myDbContext.SaveChanges();
+            systemDbContext.Neighborhoods.Remove(neighborhood);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

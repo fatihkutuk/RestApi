@@ -12,31 +12,38 @@ namespace RestApi.Controllers.User
     [ApiController]
     public class UserAppointmentsController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public UserAppointmentsController(MyDBContext context)
+        public UserAppointmentsController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<UserAppointments> Get()
         {
-            return (this.myDbContext.UserAppointments.ToList());
+            return (this.systemDbContext.UserAppointments.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public UserAppointments Get([FromRoute] int Id)
+        {
+            return (systemDbContext.UserAppointments.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(UserAppointments userAppointments)
         {
-            myDbContext.UserAppointments.Add(userAppointments);
-            myDbContext.SaveChanges();
+            systemDbContext.UserAppointments.Add(userAppointments);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(UserAppointments userAppointments)
         {
-            myDbContext.UserAppointments.Update(userAppointments);
-            myDbContext.SaveChanges();
+            systemDbContext.UserAppointments.Update(userAppointments);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -44,8 +51,8 @@ namespace RestApi.Controllers.User
 
         public IActionResult Delete(UserAppointments userAppointments)
         {
-            myDbContext.UserAppointments.Remove(userAppointments);
-            myDbContext.SaveChanges();
+            systemDbContext.UserAppointments.Remove(userAppointments);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

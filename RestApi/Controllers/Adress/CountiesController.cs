@@ -14,31 +14,38 @@ namespace RestApi.Controllers.Adress
     [ApiController]
     public class CountiesController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public CountiesController(MyDBContext context)
+        public CountiesController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<Counties> Get()
         {
-            return (this.myDbContext.Counties.ToList());
+            return (this.systemDbContext.Counties.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public Counties Get([FromRoute] int Id)
+        {
+            return (systemDbContext.Counties.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(Counties counties)
         {
-            myDbContext.Counties.Add(counties);
-            myDbContext.SaveChanges();
+            systemDbContext.Counties.Add(counties);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(Counties counties)
         {
-            myDbContext.Counties.Update(counties);
-            myDbContext.SaveChanges();
+            systemDbContext.Counties.Update(counties);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -46,8 +53,8 @@ namespace RestApi.Controllers.Adress
 
         public IActionResult Delete(Counties counties)
         {
-            myDbContext.Counties.Remove(counties);
-            myDbContext.SaveChanges();
+            systemDbContext.Counties.Remove(counties);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

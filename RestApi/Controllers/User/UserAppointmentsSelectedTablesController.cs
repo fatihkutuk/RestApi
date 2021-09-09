@@ -12,31 +12,38 @@ namespace RestApi.Controllers.User
     [ApiController]
     public class UserAppointmentsSelectedTablesController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public UserAppointmentsSelectedTablesController(MyDBContext context)
+        public UserAppointmentsSelectedTablesController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<UserAppointmentsSelectedTables> Get()
         {
-            return (this.myDbContext.UserAppointmentsSelectedTables.ToList());
+            return (this.systemDbContext.UserAppointmentsSelectedTables.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public UserAppointmentsSelectedTables Get([FromRoute] int Id)
+        {
+            return (systemDbContext.UserAppointmentsSelectedTables.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(UserAppointmentsSelectedTables userAppointmentsSelectedTables)
         {
-            myDbContext.UserAppointmentsSelectedTables.Add(userAppointmentsSelectedTables);
-            myDbContext.SaveChanges();
+            systemDbContext.UserAppointmentsSelectedTables.Add(userAppointmentsSelectedTables);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(UserAppointmentsSelectedTables userAppointmentsSelectedTables)
         {
-            myDbContext.UserAppointmentsSelectedTables.Update(userAppointmentsSelectedTables);
-            myDbContext.SaveChanges();
+            systemDbContext.UserAppointmentsSelectedTables.Update(userAppointmentsSelectedTables);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -44,8 +51,8 @@ namespace RestApi.Controllers.User
 
         public IActionResult Delete(UserAppointmentsSelectedTables userAppointmentsSelectedTables)
         {
-            myDbContext.UserAppointmentsSelectedTables.Remove(userAppointmentsSelectedTables);
-            myDbContext.SaveChanges();
+            systemDbContext.UserAppointmentsSelectedTables.Remove(userAppointmentsSelectedTables);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

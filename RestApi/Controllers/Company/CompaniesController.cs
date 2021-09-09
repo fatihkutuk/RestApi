@@ -15,31 +15,38 @@ namespace RestApi.Controllers.Company
     {
 
 
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public CompaniesController(MyDBContext context)
+        public CompaniesController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<Companies> Get()
         {
-            return (this.myDbContext.Companies.ToList());
+            return (this.systemDbContext.Companies.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public Companies Get([FromRoute] int Id)
+        {
+            return (systemDbContext.Companies.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(Companies companies)
         {
-            myDbContext.Companies.Add(companies);
-            myDbContext.SaveChanges();
+            systemDbContext.Companies.Add(companies);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(Companies companies)
         {
-            myDbContext.Companies.Update(companies);
-            myDbContext.SaveChanges();
+            systemDbContext.Companies.Update(companies);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -47,8 +54,8 @@ namespace RestApi.Controllers.Company
 
         public IActionResult Delete(Companies companies)
         {
-            myDbContext.Companies.Remove(companies);
-            myDbContext.SaveChanges();
+            systemDbContext.Companies.Remove(companies);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

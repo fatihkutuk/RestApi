@@ -15,32 +15,38 @@ namespace RestApi.Controllers.Company
     {
 
 
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public CompanyGroupsController(MyDBContext context)
+        public CompanyGroupsController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<CompanyGroups> Get()
         {
-            return (this.myDbContext.CompanyGroups.ToList());
+            return (this.systemDbContext.CompanyGroups.ToList());
+        }
+
+        [HttpGet("{Id}")]
+        public CompanyGroups Get([FromRoute] int Id)
+        {
+            return (systemDbContext.CompanyGroups.Where(c => c.Id == Id).FirstOrDefault());
         }
 
         [HttpPost]
         public IActionResult Post(CompanyGroups companyGroups)
         {
-            myDbContext.CompanyGroups.Add(companyGroups);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyGroups.Add(companyGroups);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(CompanyGroups companyGroups)
         {
-            myDbContext.CompanyGroups.Update(companyGroups);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyGroups.Update(companyGroups);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -48,8 +54,8 @@ namespace RestApi.Controllers.Company
 
         public IActionResult Delete(CompanyGroups companyGroups)
         {
-            myDbContext.CompanyGroups.Remove(companyGroups);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyGroups.Remove(companyGroups);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

@@ -12,31 +12,38 @@ namespace RestApi.Controllers.User
     [ApiController]
     public class UsersController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public UsersController(MyDBContext context)
+        public UsersController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<Users> Get()
         {
-            return (this.myDbContext.Users.ToList());
+            return (this.systemDbContext.Users.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public Users Get([FromRoute] int Id)
+        {
+            return (systemDbContext.Users.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(Users users)
         {
-            myDbContext.Users.Add(users);
-            myDbContext.SaveChanges();
+            systemDbContext.Users.Add(users);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(Users users)
         {
-            myDbContext.Users.Update(users);
-            myDbContext.SaveChanges();
+            systemDbContext.Users.Update(users);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -44,8 +51,8 @@ namespace RestApi.Controllers.User
 
         public IActionResult Delete(Users users)
         {
-            myDbContext.Users.Remove(users);
-            myDbContext.SaveChanges();
+            systemDbContext.Users.Remove(users);
+            systemDbContext.SaveChanges();
             return Accepted();
 
         }

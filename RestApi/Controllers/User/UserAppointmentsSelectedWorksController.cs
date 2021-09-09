@@ -12,31 +12,38 @@ namespace RestApi.Controllers.User
     [ApiController]
     public class UserAppointmentsSelectedWorksController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public UserAppointmentsSelectedWorksController(MyDBContext context)
+        public UserAppointmentsSelectedWorksController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<UserAppointmentsSelectedWorks> Get()
         {
-            return (this.myDbContext.UserAppointmentsSelectedWorks.ToList());
+            return (this.systemDbContext.UserAppointmentsSelectedWorks.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public UserAppointmentsSelectedWorks Get([FromRoute] int Id)
+        {
+            return (systemDbContext.UserAppointmentsSelectedWorks.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(UserAppointmentsSelectedWorks userAppointmentsSelectedWorks)
         {
-            myDbContext.UserAppointmentsSelectedWorks.Add(userAppointmentsSelectedWorks);
-            myDbContext.SaveChanges();
+            systemDbContext.UserAppointmentsSelectedWorks.Add(userAppointmentsSelectedWorks);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(UserAppointmentsSelectedWorks userAppointmentsSelectedWorks)
         {
-            myDbContext.UserAppointmentsSelectedWorks.Update(userAppointmentsSelectedWorks);
-            myDbContext.SaveChanges();
+            systemDbContext.UserAppointmentsSelectedWorks.Update(userAppointmentsSelectedWorks);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -44,8 +51,8 @@ namespace RestApi.Controllers.User
 
         public IActionResult Delete(UserAppointmentsSelectedWorks userAppointmentsSelectedWorks)
         {
-            myDbContext.UserAppointmentsSelectedWorks.Remove(userAppointmentsSelectedWorks);
-            myDbContext.SaveChanges();
+            systemDbContext.UserAppointmentsSelectedWorks.Remove(userAppointmentsSelectedWorks);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

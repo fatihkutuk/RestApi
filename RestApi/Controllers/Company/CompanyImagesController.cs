@@ -12,31 +12,38 @@ namespace RestApi.Controllers.Company
     [ApiController]
     public class CompanyImagesController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public CompanyImagesController(MyDBContext context)
+        public CompanyImagesController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<CompanyImages> Get()
         {
-            return (this.myDbContext.CompanyImages.ToList());
+            return (this.systemDbContext.CompanyImages.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public CompanyImages Get([FromRoute] int Id)
+        {
+            return (systemDbContext.CompanyImages.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(CompanyImages companyImages)
         {
-            myDbContext.CompanyImages.Add(companyImages);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyImages.Add(companyImages);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(CompanyImages companyImages)
         {
-            myDbContext.CompanyImages.Update(companyImages);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyImages.Update(companyImages);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -44,8 +51,8 @@ namespace RestApi.Controllers.Company
 
         public IActionResult Delete(CompanyImages companyImages)
         {
-            myDbContext.CompanyImages.Remove(companyImages);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyImages.Remove(companyImages);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

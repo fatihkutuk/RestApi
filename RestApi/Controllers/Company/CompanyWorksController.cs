@@ -12,31 +12,38 @@ namespace RestApi.Controllers.Company
     [ApiController]
     public class CompanyWorksController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public CompanyWorksController(MyDBContext context)
+        public CompanyWorksController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<CompanyWorks> Get()
         {
-            return (this.myDbContext.CompanyWorks.ToList());
+            return (this.systemDbContext.CompanyWorks.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public CompanyWorks Get([FromRoute] int Id)
+        {
+            return (systemDbContext.CompanyWorks.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(CompanyWorks companyWorks)
         {
-            myDbContext.CompanyWorks.Add(companyWorks);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyWorks.Add(companyWorks);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(CompanyWorks companyWorks)
         {
-            myDbContext.CompanyWorks.Update(companyWorks);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyWorks.Update(companyWorks);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -44,8 +51,8 @@ namespace RestApi.Controllers.Company
 
         public IActionResult Delete(CompanyWorks companyWorks)
         {
-            myDbContext.CompanyWorks.Remove(companyWorks);
-            myDbContext.SaveChanges();
+            systemDbContext.CompanyWorks.Remove(companyWorks);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }

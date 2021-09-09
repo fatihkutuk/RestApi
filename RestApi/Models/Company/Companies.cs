@@ -20,7 +20,6 @@ namespace RestApi.Models.Company
         public string Password { get; set; }
         public string CompanyDelegatePhoneNumber { get; set; }
         public string CompanyMail { get; set; }
-        public bool isTable { get; set; }
         public DateTime CreationDateTime { get; set; }
         public DateTime? LastUpdateDateTime { get; set; }
     }

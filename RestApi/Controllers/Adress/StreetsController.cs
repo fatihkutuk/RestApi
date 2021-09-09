@@ -13,31 +13,38 @@ namespace RestApi.Controllers.Adress
     [ApiController]
     public class StreetsController : Controller
     {
-        private MyDBContext myDbContext;
+        private systemDbContext systemDbContext;
 
-        public StreetsController(MyDBContext context)
+        public StreetsController(systemDbContext context)
         {
-            myDbContext = context;
+            systemDbContext = context;
         }
 
         [HttpGet]
         public IList<Streets> Get()
         {
-            return (this.myDbContext.Streets.ToList());
+            return (this.systemDbContext.Streets.ToList());
         }
+
+        [HttpGet("{Id}")]
+        public Streets Get([FromRoute] int Id)
+        {
+            return (systemDbContext.Streets.Where(c => c.Id == Id).FirstOrDefault());
+        }
+
         [HttpPost]
         public IActionResult Post(Streets streets)
         {
-            myDbContext.Streets.Add(streets);
-            myDbContext.SaveChanges();
+            systemDbContext.Streets.Add(streets);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
         [HttpPut]
         public IActionResult Put(Streets streets)
         {
-            myDbContext.Streets.Update(streets);
-            myDbContext.SaveChanges();
+            systemDbContext.Streets.Update(streets);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
 
@@ -45,8 +52,8 @@ namespace RestApi.Controllers.Adress
 
         public IActionResult Delete(Streets streets)
         {
-            myDbContext.Streets.Remove(streets);
-            myDbContext.SaveChanges();
+            systemDbContext.Streets.Remove(streets);
+            systemDbContext.SaveChanges();
             return Accepted();
         }
     }
